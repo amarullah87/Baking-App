@@ -1,17 +1,21 @@
 package com.amarullah87.bakingapp.adapters;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amarullah87.bakingapp.R;
 import com.amarullah87.bakingapp.services.Recipe;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +49,17 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.MyViewHo
         Recipe item = items.get(position);
         holder.title.setText(item.getName());
         holder.servings.setText(String.valueOf(item.getServings()));
+
+        String imageUrl = item.getImage();
+        if(!Objects.equals(imageUrl, "")){
+            holder.thumbnail.setVisibility(View.VISIBLE);
+
+            Uri uri = Uri.parse(imageUrl).buildUpon().build();
+            Picasso.with(mContext)
+                    .load(uri)
+                    .placeholder(R.drawable.myicon)
+                    .into(holder.thumbnail);
+        }
     }
 
     @Override
@@ -62,6 +77,7 @@ public class RecipesAdapter extends RecyclerView.Adapter<RecipesAdapter.MyViewHo
         @BindView(R.id.card_view) CardView cardView;
         @BindView(R.id.title) TextView title;
         @BindView(R.id.servings) TextView servings;
+        @BindView(R.id.thumbnail) ImageView thumbnail;
 
         public MyViewHolder(View itemView) {
             super(itemView);

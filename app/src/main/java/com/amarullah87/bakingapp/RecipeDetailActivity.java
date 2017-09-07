@@ -3,6 +3,7 @@ package com.amarullah87.bakingapp;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -44,38 +45,42 @@ public class RecipeDetailActivity extends AppCompatActivity
 
         if(savedInstanceState == null) {
 
-            Bundle intentBundle = getIntent().getExtras();
+            if(getIntent().getExtras() != null) {
+                Bundle intentBundle = getIntent().getExtras();
 
-            ArrayList<Recipe> items = intentBundle.getParcelableArrayList("selected_recipe");
-            if (items != null) {
-                recipeName = items.get(0).getName();
-            }
+                ArrayList<Recipe> items = intentBundle.getParcelableArrayList("selected_recipe");
+                if (items != null) {
+                    recipeName = items.get(0).getName();
+                }
 
-            manager = getSupportFragmentManager();
+                manager = getSupportFragmentManager();
 
-            RecipeDetailFragment detailFragment = new RecipeDetailFragment();
-            detailFragment.setArguments(intentBundle);
-            manager.beginTransaction()
-                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                    .replace(
-                            R.id.fragment_step,
-                            detailFragment,
-                            detailFragment.getTag())
-                    .commit();
-
-            if(rootLayout.getTag() != null && rootLayout.getTag().equals("tablet-land")) {
-
-                Log.e("Tablet-Land: ", "Uye!");
-                RecipeStepDetailFragment stepDetailFragment = new RecipeStepDetailFragment();
-                stepDetailFragment.setArguments(intentBundle);
+                RecipeDetailFragment detailFragment = new RecipeDetailFragment();
+                detailFragment.setArguments(intentBundle);
                 manager.beginTransaction()
                         .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                         .replace(
-                                R.id.fragment_container,
-                                stepDetailFragment,
-                                stepDetailFragment.getTag())
-                        .addToBackStack(STACK_DETAIL)
+                                R.id.fragment_step,
+                                detailFragment,
+                                detailFragment.getTag())
                         .commit();
+
+                if (rootLayout.getTag() != null && rootLayout.getTag().equals("tablet-land")) {
+
+                    Log.e("Tablet-Land: ", "Uye!");
+                    RecipeStepDetailFragment stepDetailFragment = new RecipeStepDetailFragment();
+                    stepDetailFragment.setArguments(intentBundle);
+                    manager.beginTransaction()
+                            .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                            .replace(
+                                    R.id.fragment_container,
+                                    stepDetailFragment,
+                                    stepDetailFragment.getTag())
+                            .addToBackStack(STACK_DETAIL)
+                            .commit();
+                }
+            }else {
+                Snackbar.make(rootLayout, R.string.no_intent_extra, Snackbar.LENGTH_LONG).show();
             }
         }else{
             recipeName = savedInstanceState.getString("title");

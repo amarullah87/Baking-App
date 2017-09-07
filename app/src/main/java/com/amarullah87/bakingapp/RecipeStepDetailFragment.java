@@ -7,19 +7,19 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amarullah87.bakingapp.services.Recipe;
 import com.amarullah87.bakingapp.services.Step;
+import com.google.android.exoplayer2.C;
 import com.google.android.exoplayer2.DefaultLoadControl;
 import com.google.android.exoplayer2.ExoPlayerFactory;
 import com.google.android.exoplayer2.LoadControl;
@@ -36,9 +36,12 @@ import com.google.android.exoplayer2.upstream.BandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
 import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
 import com.google.android.exoplayer2.util.Util;
+import com.squareup.picasso.Picasso;
 
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,10 +52,12 @@ import butterknife.ButterKnife;
 
 public class RecipeStepDetailFragment extends Fragment implements View.OnClickListener{
 
+    private static final String SELECTED_POSITION = "last_position";
     @BindView(R.id.mediaPlayer) SimpleExoPlayerView mediaPlayer;
     @BindView(R.id.txtDescription) TextView description;
     @BindView(R.id.prevStep) ImageButton prevStep;
     @BindView(R.id.nextStep) ImageButton nextStep;
+    @BindView(R.id.thumbnailPlayer) ImageView thumbnailPlayer;
 
     private SimpleExoPlayer player;
     private BandwidthMeter bandwidthMeter;
@@ -62,6 +67,8 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     private int index;
     private String videoURL;
     String recipeName;
+    private long position;
+    private Uri videoUri;
 
     public RecipeStepDetailFragment() {
     }
@@ -82,10 +89,12 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
         bandwidthMeter = new DefaultBandwidthMeter();
         itemClickListener = (RecipeDetailActivity)getActivity();
 
+        position = C.TIME_UNSET;
         if(savedInstanceState != null){
             steps = savedInstanceState.getParcelableArrayList("selected_step");
             index = savedInstanceState.getInt("index");
             recipeName = savedInstanceState.getString("title");
+            position = savedInstanceState.getLong(SELECTED_POSITION);
         }else{
             steps = getArguments().getParcelableArrayList("selected_step");
 
@@ -101,6 +110,8 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
         }
 
         videoURL = steps.get(index).getVideoURL();
+        videoUri = Uri.parse(steps.get(index).getVideoURL());
+
         description.setText(steps.get(index).getDescription());
         description.setVisibility(View.VISIBLE);
         mediaPlayer.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIT);
@@ -118,11 +129,37 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                 description.setVisibility(View.GONE);
             }
 
-            initPlayre(Uri.parse(steps.get(index).getVideoURL()));
+            initPlayer(Uri.parse(steps.get(index).getVideoURL()));
         }else{
-            player = null;
-            mediaPlayer.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.ic_videocam_off_white));
-            mediaPlayer.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+            if(isVideoFile(steps.get(index).getThumbnailURL())){
+                mediaPlayer.setVisibility(View.VISIBLE);
+                thumbnailPlayer.setVisibility(View.GONE);
+
+                if(view.findViewWithTag("600dp_land_step_detail") != null){
+                    getActivity().findViewById(R.id.fragment_container).setLayoutParams(new LinearLayout.LayoutParams(-1, -2));
+                    mediaPlayer.setResizeMode(AspectRatioFrameLayout.RESIZE_MODE_FIXED_WIDTH);
+                }else if(isLandscapeMode(getActivity())){
+                    description.setVisibility(View.GONE);
+                }
+
+                initPlayer(Uri.parse(steps.get(index).getThumbnailURL()));
+            }else{
+                player = null;
+                mediaPlayer.setVisibility(View.GONE);
+                mediaPlayer.setForeground(ContextCompat.getDrawable(getContext(), R.drawable.ic_videocam_off_white));
+                mediaPlayer.setLayoutParams(new LinearLayout.LayoutParams(300, 300));
+
+                thumbnailPlayer.setVisibility(View.VISIBLE);
+                String imageUrl = steps.get(index).getThumbnailURL();
+                if(!Objects.equals(imageUrl, "")){
+                    Uri uri = Uri.parse(imageUrl).buildUpon().build();
+                    Picasso.with(getActivity())
+                            .load(uri)
+                            .placeholder(R.drawable.myicon)
+                            .into(thumbnailPlayer);
+                }
+            }
+
         }
 
         nextStep.setOnClickListener(this);
@@ -136,43 +173,24 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
-        if (player!=null) {
-            player.stop();
-            player.release();
-        }
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        if(player != null){
-            player.stop();
-            player.release();
-            player = null;
-        }
-    }
-
-    @Override
     public void onPause() {
         super.onPause();
-        if (player!=null) {
+        if (player != null) {
+            position = player.getCurrentPosition();
             player.stop();
             player.release();
         }
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
-        if(player != null){
-            player.stop();
-            player.release();
+    public void onResume() {
+        super.onResume();
+        if(videoUri != null){
+            initPlayer(videoUri);
         }
     }
 
-    private void initPlayre(Uri parse) {
+    private void initPlayer(Uri parse) {
         if (player == null){
             TrackSelection.Factory videoTrackSelectionFactory = new AdaptiveVideoTrackSelection.Factory(bandwidthMeter);
             DefaultTrackSelector trackSelector = new DefaultTrackSelector(handler, videoTrackSelectionFactory);
@@ -183,6 +201,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
 
             String userAgent = Util.getUserAgent(getContext(), "Baking App");
             MediaSource mediaSource = new ExtractorMediaSource(parse, new DefaultDataSourceFactory(getContext(), userAgent), new DefaultExtractorsFactory(), null, null);
+            if (position != C.TIME_UNSET) player.seekTo(position);
             player.prepare(mediaSource);
             player.setPlayWhenReady(true);
         }
@@ -220,8 +239,19 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+        outState.putLong(SELECTED_POSITION, position);
         outState.putParcelableArrayList("selected_step", steps);
         outState.putInt("index", index);
         outState.putString("title", recipeName);
+    }
+
+    public static boolean isImageFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.startsWith("image");
+    }
+
+    public static boolean isVideoFile(String path) {
+        String mimeType = URLConnection.guessContentTypeFromName(path);
+        return mimeType != null && mimeType.startsWith("video");
     }
 }
