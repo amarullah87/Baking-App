@@ -1,4 +1,4 @@
-package com.amarullah87.bakingapp.utilities;
+package com.amarullah87.bakingapp.idlingresource;
 
 import android.support.annotation.Nullable;
 import android.support.test.espresso.IdlingResource;
@@ -6,7 +6,7 @@ import android.support.test.espresso.IdlingResource;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class TestIdlingResource implements IdlingResource {
+public class SimpleIdlingResource implements IdlingResource {
 
     @Nullable
     private volatile ResourceCallback mCallback;

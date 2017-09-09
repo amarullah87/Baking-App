@@ -26,7 +26,7 @@ import com.amarullah87.bakingapp.services.Recipe;
 import com.amarullah87.bakingapp.services.RestAPI;
 import com.amarullah87.bakingapp.utilities.Configs;
 import com.amarullah87.bakingapp.utilities.InternetConnection;
-import com.amarullah87.bakingapp.utilities.TestIdlingResource;
+import com.amarullah87.bakingapp.idlingresource.SimpleIdlingResource;
 
 import java.util.ArrayList;
 
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.It
     @BindView(R.id.rootLayout) RelativeLayout rootLayout;
 
     @Nullable
-    private TestIdlingResource mIdlingResource;
+    private SimpleIdlingResource mIdlingResource;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.It
     @NonNull
     public IdlingResource getIdlingResource() {
         if (mIdlingResource == null) {
-            mIdlingResource = new TestIdlingResource();
+            mIdlingResource = new SimpleIdlingResource();
         }
         return mIdlingResource;
     }
@@ -110,6 +110,9 @@ public class MainActivity extends AppCompatActivity implements RecipesAdapter.It
                             recipesBundle.putParcelableArrayList("Recipes", recipes);
 
                             adapter.setRecipeData(recipes, getApplicationContext());
+                            if(mIdlingResource != null){
+                                mIdlingResource.setIdleState(true);
+                            }
                         }else{
                             Snackbar.make(parent, R.string.no_data, Snackbar.LENGTH_LONG).show();
                         }
