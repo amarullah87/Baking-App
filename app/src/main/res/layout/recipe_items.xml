@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="@dimen/margin100"
     android:layout_margin="@dimen/margin8"
     android:foreground="?android:attr/selectableItemBackground"
     card_view:cardCornerRadius="@dimen/margin8"

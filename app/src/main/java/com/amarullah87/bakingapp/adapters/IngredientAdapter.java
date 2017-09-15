@@ -16,7 +16,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by apandhis on 24/08/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * Adapter For Ingredient Items
  */
 
 public class IngredientAdapter extends RecyclerView.Adapter<IngredientAdapter.MyViewHolder> {

@@ -11,7 +11,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by apandhis on 18/08/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * Configs is a Class that contain any URL/ variable to use later in another class
  */
 
 public class Configs {

@@ -12,7 +12,7 @@ import java.util.List;
 import static com.amarullah87.bakingapp.utilities.BakingAppWidget.ingredientsList;
 
 /**
- * Created by apandhis on 03/09/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
  */
 
 public class GridWidgetService extends RemoteViewsService {

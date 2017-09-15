@@ -8,7 +8,8 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 
 /**
- * Created by apandhis on 03/09/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * Service for Update Widget
  */
 
 public class BakingAppService extends IntentService {

@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by apandhis on 18/08/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * Recipe Objects
  */
 
 public class Recipe implements Parcelable{

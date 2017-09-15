@@ -9,4 +9,7 @@
     <string name="add_to_widget">Add To Widget</string>
     <string name="your_recipe">Your Recipe</string>
     <string name="no_intent_extra">Oops! There is no Intent Data Available.</string>
+    <string name="last_step">You are in the Last Step.</string>
+    <string name="first_step">You are in the First step</string>
+    <string name="widget_added">Added To Widget</string>
 </resources>

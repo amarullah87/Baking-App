@@ -47,28 +47,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by apandhis on 24/08/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * Contain Video Recipe
  */
 
 public class RecipeStepDetailFragment extends Fragment implements View.OnClickListener{
 
     private static final String SELECTED_POSITION = "last_position";
+
+    private SimpleExoPlayer player;
+    private BandwidthMeter bandwidthMeter;
+    private ArrayList<Step> steps = new ArrayList<>();
+    private Handler handler;
+    private int index;
+    String recipeName;
+    private long position;
+    private Uri videoUri;
+
     @BindView(R.id.mediaPlayer) SimpleExoPlayerView mediaPlayer;
     @BindView(R.id.txtDescription) TextView description;
     @BindView(R.id.prevStep) ImageButton prevStep;
     @BindView(R.id.nextStep) ImageButton nextStep;
     @BindView(R.id.thumbnailPlayer) ImageView thumbnailPlayer;
-
-    private SimpleExoPlayer player;
-    private BandwidthMeter bandwidthMeter;
-    private ArrayList<Step> steps = new ArrayList<>();
-    private ArrayList<Recipe> recipes = new ArrayList<>();
-    private Handler handler;
-    private int index;
-    private String videoURL;
-    String recipeName;
-    private long position;
-    private Uri videoUri;
 
     public RecipeStepDetailFragment() {
     }
@@ -103,13 +103,13 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                 index = getArguments().getInt("index");
                 recipeName = getArguments().getString("title");
             }else {
-                recipes = getArguments().getParcelableArrayList("selected_recipe");
+                ArrayList<Recipe> recipes = getArguments().getParcelableArrayList("selected_recipe");
                 steps = (ArrayList<Step>) recipes.get(0).getSteps();
                 index = 0;
             }
         }
 
-        videoURL = steps.get(index).getVideoURL();
+        String videoURL = steps.get(index).getVideoURL();
         videoUri = Uri.parse(steps.get(index).getVideoURL());
 
         description.setText(steps.get(index).getDescription());
@@ -151,7 +151,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
 
                 thumbnailPlayer.setVisibility(View.VISIBLE);
                 String imageUrl = steps.get(index).getThumbnailURL();
-                if(!Objects.equals(imageUrl, "")){
+                if(!imageUrl.isEmpty()){
                     Uri uri = Uri.parse(imageUrl).buildUpon().build();
                     Picasso.with(getActivity())
                             .load(uri)
@@ -179,14 +179,17 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
             position = player.getCurrentPosition();
             player.stop();
             player.release();
+            player = null;
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if(videoUri != null){
+        if(videoUri != null || player != null){
             initPlayer(videoUri);
+        }else {
+            initPlayer(Uri.parse(steps.get(index).getThumbnailURL()));
         }
     }
 
@@ -219,7 +222,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                     }
                     itemClickListener.onListItemClick(steps, steps.get(index).getId() + 1, recipeName);
                 }else{
-                    Toast.makeText(getContext(), "You are in the Last step", Toast.LENGTH_SHORT).show();
+                    ((RecipeDetailActivity)getActivity()).showSnackbar(getResources().getString(R.string.last_step));
                 }
                 break;
 
@@ -230,7 +233,7 @@ public class RecipeStepDetailFragment extends Fragment implements View.OnClickLi
                     }
                     itemClickListener.onListItemClick(steps,steps.get(index).getId() - 1,recipeName);
                 }else{
-                    Toast.makeText(getActivity(), "You are in the First step", Toast.LENGTH_SHORT).show();
+                    ((RecipeDetailActivity)getActivity()).showSnackbar(getResources().getString(R.string.first_step));
                 }
                 break;
         }

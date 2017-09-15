@@ -21,38 +21,49 @@ android {
     }
 }
 
+ext {
+    supportLibVersion = '25.3.1'
+    retrofitVersion = '2.1.0'
+    okHttpVersion = '3.7.0'
+    loggingVersion = '3.4.0'
+    espressoVersion = '2.2.2'
+    exoPlayerVersion = 'r2.0.4'
+    butterKnifeVersion = '8.4.0'
+    picassoVersion = '2.5.2'
+}
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
 
-    compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
-    compile 'com.android.support:support-v4:25.3.1'
-    compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile 'com.android.support:cardview-v7:25.3.1'
-    compile 'com.android.support:design:25.3.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile "com.android.support:appcompat-v7:${supportLibVersion}"
+    compile "com.android.support.constraint:constraint-layout:1.0.2"
+    compile "com.android.support:support-v4:${supportLibVersion}"
+    compile "com.android.support:recyclerview-v7:${supportLibVersion}"
+    compile "com.android.support:cardview-v7:${supportLibVersion}"
+    compile "com.android.support:design:${supportLibVersion}"
 
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.1.0'
-    compile 'com.squareup.okhttp3:logging-interceptor:3.4.0'
-    compile 'com.squareup.okhttp3:okhttp:3.7.0'
+    compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
+    compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
+    compile "com.squareup.okhttp3:logging-interceptor:${loggingVersion}"
+    compile "com.squareup.okhttp3:okhttp:${okHttpVersion}"
 
-    androidTestCompile 'com.android.support.test.espresso:espresso-core:2.2.2'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:2.2.2'
-    androidTestCompile 'com.android.support.test:rules:0.5'
-    androidTestCompile 'com.android.support.test:runner:0.5'
-    androidTestCompile 'com.android.support:support-annotations:25.3.1'
+    androidTestCompile "com.android.support.test.espresso:espresso-core:2.2.2"
+    androidTestCompile "com.android.support.test.espresso:espresso-intents:2.2.2"
+    androidTestCompile "com.android.support.test:rules:0.5"
+    androidTestCompile "com.android.support.test:runner:0.5"
+    androidTestCompile "com.android.support:support-annotations:25.3.1"
 
-    compile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
-    compile 'com.google.android.exoplayer:exoplayer:r2.0.4'
+    compile "com.android.support.test.espresso:espresso-contrib:${espressoVersion}"
+    compile "com.google.android.exoplayer:exoplayer:${exoPlayerVersion}"
 
-    compile 'com.jakewharton:butterknife:8.4.0'
-    apt 'com.jakewharton:butterknife-compiler:8.4.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    testCompile 'junit:junit:4.12'
+    compile "com.jakewharton:butterknife:${butterKnifeVersion}"
+    apt "com.jakewharton:butterknife-compiler:${butterKnifeVersion}"
+    compile "com.squareup.picasso:picasso:${picassoVersion}"
+    
+    testCompile "junit:junit:4.12"
 }
 
 allprojects {

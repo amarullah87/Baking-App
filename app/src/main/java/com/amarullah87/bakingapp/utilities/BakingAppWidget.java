@@ -14,6 +14,7 @@ import com.amarullah87.bakingapp.RecipeDetailActivity;
 import java.util.ArrayList;
 
 /**
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
  * Implementation of App Widget functionality.
  */
 public class BakingAppWidget extends AppWidgetProvider {

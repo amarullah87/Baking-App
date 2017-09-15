@@ -36,6 +36,10 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ */
+
 public class MainActivity extends AppCompatActivity implements RecipesAdapter.ItemClickListener{
 
     private static final String TAG = MainActivity.class.getSimpleName();

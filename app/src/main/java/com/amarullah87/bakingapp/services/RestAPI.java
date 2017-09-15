@@ -6,7 +6,8 @@ import retrofit2.Call;
 import retrofit2.http.GET;
 
 /**
- * Created by apandhis on 18/08/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * REST Recie
  */
 
 public interface RestAPI {

@@ -24,7 +24,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by apandhis on 18/08/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * Detail Activity and Contain 2 Fragments
  */
 
 public class RecipeDetailActivity extends AppCompatActivity
@@ -65,7 +66,9 @@ public class RecipeDetailActivity extends AppCompatActivity
                                 detailFragment.getTag())
                         .commit();
 
-                if (rootLayout.getTag() != null && rootLayout.getTag().equals("tablet-land")) {
+                //if (rootLayout.getTag() != null && rootLayout.getTag().equals("tablet-land")) {
+                boolean tabletSize = getResources().getBoolean(R.bool.isTablet);
+                if(tabletSize){
 
                     Log.e("Tablet-Land: ", "Uye!");
                     RecipeStepDetailFragment stepDetailFragment = new RecipeStepDetailFragment();
@@ -139,6 +142,10 @@ public class RecipeDetailActivity extends AppCompatActivity
         return super.onCreateOptionsMenu(menu);
     }
 
+    public void showSnackbar(String text){
+        Snackbar.make(rootLayout, text, Snackbar.LENGTH_LONG).show();
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -151,7 +158,8 @@ public class RecipeDetailActivity extends AppCompatActivity
                 RecipeDetailFragment fragment = (RecipeDetailFragment) manager.findFragmentById(R.id.fragment_step);
                 fragment.addToWidget();
 
-                Toast.makeText(this, "Added To Widget", Toast.LENGTH_SHORT).show();
+
+                showSnackbar(getResources().getString(R.string.widget_added));
                 break;
         }
 

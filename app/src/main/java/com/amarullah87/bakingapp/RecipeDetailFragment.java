@@ -27,7 +27,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by apandhis on 24/08/17.
+ * Baking App Project Android Fast Track Nanodegree - Created By Irfan Apandhi, September 2017
+ * Contain Detail step and Ingredients of Recipe
  */
 
 public class RecipeDetailFragment extends Fragment{
